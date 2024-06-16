@@ -121,7 +121,6 @@ public class TaskManager {
              а не копируем полностью весь объект в новый. Я чуть не сошел с ума на этот моменте, иногда такое вылетает
              из головы и это очень печально, ведь останавливает тебя очень надолго*/
             exisEpic.setDescription(newEpic.getDescription());
-            updateEpicStatus(exisEpic);
         }
     }
 
