@@ -1,4 +1,4 @@
-package PackageTask;
+package package_task;
 import java.util.Objects;
 
 public class Task {

@@ -1,5 +1,5 @@
-import PackageTask.*;
-import Manager.*;
+import package_task.*;
+import manager.*;
 
 public class Main {
     public static void main(String[] args) {

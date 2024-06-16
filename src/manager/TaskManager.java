@@ -1,14 +1,14 @@
-package Manager;
-import PackageTask.*;
+package manager;
+import package_task.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class TaskManager {
-    private Map<Integer, Task> tasks = new HashMap<>();
-    private Map<Integer, Subtask> subtasks = new HashMap<>();
-    private Map<Integer, Epic> epics = new HashMap<>();
+    final private Map<Integer, Task> tasks = new HashMap<>();
+    final private Map<Integer, Subtask> subtasks = new HashMap<>();
+    final private Map<Integer, Epic> epics = new HashMap<>();
     private int nextId = 1;
 
     private int generateUniqueId() {
@@ -34,7 +34,12 @@ public class TaskManager {
     }
 
     public void updateTask(Task task) {
-        tasks.put(task.getId(), task);
+        if(tasks.containsKey(task.getId())){
+            tasks.put(task.getId(), task);
+        }else{
+            System.out.println("Таски под таким id нету, воспользуйтесь добавлением");
+        }
+
     }
 
     public void deleteTaskById(int id) {
@@ -46,7 +51,12 @@ public class TaskManager {
     }
 
     public void deleteAllSubtasks() {
+        for(Epic epic : epics.values()){
+            epic.getSubtaskIds().clear();
+            updateEpicStatus(epic);
+        }
         subtasks.clear();
+
     }
 
     public Subtask getSubtaskById(int id) {
@@ -54,34 +64,36 @@ public class TaskManager {
     }
 
     public void createSubtask(Subtask subtask) {
-        int id = generateUniqueId();
-        subtask.setId(id);
-        subtasks.put(id, subtask);
-        Epic epic = epics.get(subtask.getEpicId());
-        if (epic != null) {
-            epic.addSubtaskId(subtask.getId());
-            updateEpicStatus(epic);
+        if(!subtasks.containsKey(subtask.getEpicId())) {
+            int id = generateUniqueId();
+            subtask.setId(id);
+            subtasks.put(id, subtask);
+            Epic epic = epics.get(subtask.getEpicId());
+        }else{
+            System.out.println("У сабтаски неверно задан epicId к которому она должна принадлежать");
         }
     }
 
     public void updateSubtask(Subtask subtask) {
-        subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
-        if (epic != null) {
-            updateEpicStatus(epic);
+        if (epic == null) {
+            System.out.println("Эпик с ID " + subtask.getEpicId() + " не найден");
+            return;
         }
+        subtasks.put(subtask.getId(), subtask);
+        updateEpicStatus(epic);
     }
+
 
     public void deleteSubtaskById(int id) {
         Subtask subtask = subtasks.remove(id);
         if (subtask != null) {
             Epic epic = epics.get(subtask.getEpicId());
-            if (epic != null) {
-                epic.removeSubtaskId(subtask.getId());
-                updateEpicStatus(epic);
-            }
+            epic.removeSubtaskId(subtask.getId());
+            updateEpicStatus(epic);
         }
     }
+
 
     public List<Epic> getAllEpics() {
         return new ArrayList<>(epics.values());
@@ -102,8 +114,15 @@ public class TaskManager {
         epics.put(id, epic);
     }
 
-    public void updateEpic(Epic epic) {
-        epics.put(epic.getId(), epic);
+    public void updateEpic(Epic newEpic) {
+        Epic exisEpic = epics.get(newEpic.getId());
+        if (exisEpic != null){
+            exisEpic.setName(newEpic.getName());/*у меня вылетело из головы что мы получаем ссылку на объект,
+             а не копируем полностью весь объект в новый. Я чуть не сошел с ума на этот моменте, иногда такое вылетает
+             из головы и это очень печально, ведь останавливает тебя очень надолго*/
+            exisEpic.setDescription(newEpic.getDescription());
+            updateEpicStatus(exisEpic);
+        }
     }
 
     public void deleteEpicById(int id) {
