@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 public class TaskManager {
-    final private Map<Integer, Task> tasks = new HashMap<>();
-    final private Map<Integer, Subtask> subtasks = new HashMap<>();
-    final private Map<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Subtask> subtasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
     private int nextId = 1;
 
     private int generateUniqueId() {
@@ -64,11 +64,13 @@ public class TaskManager {
     }
 
     public void createSubtask(Subtask subtask) {
-        if(!subtasks.containsKey(subtask.getEpicId())) {
+        Epic epic = epics.get(subtask.getEpicId());
+        if (epic != null){
             int id = generateUniqueId();
             subtask.setId(id);
             subtasks.put(id, subtask);
-            Epic epic = epics.get(subtask.getEpicId());
+            epic.addSubtaskId(subtask.getId());
+            updateEpicStatus(epic);
         }else{
             System.out.println("У сабтаски неверно задан epicId к которому она должна принадлежать");
         }
@@ -81,7 +83,6 @@ public class TaskManager {
             return;
         }
         subtasks.put(subtask.getId(), subtask);
-        updateEpicStatus(epic);
     }
 
 
@@ -93,7 +94,6 @@ public class TaskManager {
             updateEpicStatus(epic);
         }
     }
-
 
     public List<Epic> getAllEpics() {
         return new ArrayList<>(epics.values());
