@@ -3,7 +3,7 @@ import manager.*;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager manager = new TaskManager();
+        TaskManager manager = Managers.getDefault();
 
         Task task1 = new Task(0, "Задача 1", "Описание 1", Status.NEW);
         manager.createTask(task1);
