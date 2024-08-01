@@ -11,6 +11,8 @@ class ManagersTest {
     @Test
     public void shouldReturnNotNull(){
         TaskManager taskManager = Managers.getDefault();
+        HistoryManager historyManager = Managers.getDefaultHistoryManager();
+        Assertions.assertNotNull(historyManager);
         Assertions.assertNotNull(taskManager);
     }
 }

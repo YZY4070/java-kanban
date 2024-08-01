@@ -15,10 +15,12 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public <T extends Task> void add(Task task){
-        if(history.size() > 10){
-            history.removeFirst();
+    public  void add(Task task){
+        if(task != null){
+            if(history.size() > 10){
+                history.removeFirst();
+            }
+            history.add(task);
         }
-        history.add(task);
     }
 }

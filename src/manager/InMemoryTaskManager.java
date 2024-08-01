@@ -12,7 +12,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Subtask> subtasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
 
-    private static int nextId = 1;
+    private int nextId = 1;
 
     private final HistoryManager historyManager;
 
@@ -203,6 +203,10 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setStatus(Status.IN_PROGRESS);
         }
+    }
+
+    public List<Task> getHistory(){
+        return historyManager.getHistory();
     }
 }
 
