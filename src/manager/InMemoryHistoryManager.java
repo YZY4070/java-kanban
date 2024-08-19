@@ -59,7 +59,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node optionalExistedNode = idNodeMap.remove(id);
 
         // Если такая нода с такой таской вообще существует
-        if (optionalExistedNode != null) {
+        if (optionalExistedNode.task != null) {
 
             // если удаляемая нода является сейчас головой
             if (optionalExistedNode == head) {
@@ -92,8 +92,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         // запоминаем слудующую голову (берем из текущей головы следующий элемент)
         Node nextHead = optionalExistedNode.next;
 
-        // берем следующий элмент за головой и обнуляем у него ссылку на предыдущий элемент
-        optionalExistedNode.next.previous = null;
         // у текущей головы обнуляем ссылку на следующий элемент (help GC)
         optionalExistedNode.next = null;
 
@@ -123,25 +121,31 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void add(Task task) {
-        removeIfExists(task);
-        generateNewNode(task);
+    public void add (Task task) {
+        if(task != null){
+            removeIfExists(task);
+            generateNewNode(task);
+        }else{
+            System.out.println("Вы пытаетесь добавить пустую таску!");
+        }
     }
 
     private List<Task> getAllTasksFromNodes() {
         List<Task> tasksFromNodes = new ArrayList<>();
 
-        tasksFromNodes.add(head.task);
-        Node nextNode = head.next;
+        if(head != null){
+            tasksFromNodes.add(head.task);
+            Node nextNode = head.next;
 
-        while (nextNode != null) {
-
-            tasksFromNodes.add(nextNode.task);
-
-            nextNode = nextNode.next;
+            while (nextNode != null) {
+                tasksFromNodes.add(nextNode.task);
+                nextNode = nextNode.next;
+            }
+            return tasksFromNodes;
+        }else{
+            System.out.println("Возвращать нечего, список пуст! Добавьте в историю таску!");
+            return tasksFromNodes;
         }
-
-        return tasksFromNodes;
     }
 
     public static class Node {
