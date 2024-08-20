@@ -35,18 +35,18 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         // Если такая нода с такой таской вообще существует
         if (optionalExistedNode != null) {
-
-            // если удаляемая нода является сейчас головой
-            if (optionalExistedNode == head) {
+            //(едиснтвенный элемент) - нода является и головой и хвостом
+            if (optionalExistedNode == head && optionalExistedNode == tail){
+                head = null;
+                tail = null;
+            } else if (optionalExistedNode == head) { // если удаляемая нода является сейчас головой
                 removeHead(optionalExistedNode);
-                // если удаляемая нода сейчас является хвостом
-            } else if (optionalExistedNode == tail) {
-                removeTail(optionalExistedNode);
-                // если удаление происходит из середины
-            } else {
-                removeFromMiddle(optionalExistedNode);
-            }
 
+            } else if (optionalExistedNode == tail) { // если удаляемая нода сейчас является хвостом
+                removeTail(optionalExistedNode);
+            } else {
+                removeFromMiddle(optionalExistedNode); // если удаление происходит из середины
+            }
         }
     }
 
@@ -57,46 +57,41 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private void removeById(Integer id) {
         Node optionalExistedNode = idNodeMap.remove(id);
-
-        // Если такая нода с такой таской вообще существует
-        if (optionalExistedNode.task != null) {
-
-            // если удаляемая нода является сейчас головой
-            if (optionalExistedNode == head) {
-                removeHead(optionalExistedNode);
-                // если удаляемая нода сейчас является хвостом
-            } else if (optionalExistedNode == tail) {
-                removeTail(optionalExistedNode);
-                // если удаление происходит из середины
-            } else {
-                removeFromMiddle(optionalExistedNode);
+        if (optionalExistedNode != null){
+            // Если такая нода с такой таской вообще существует
+            if (optionalExistedNode.task != null) {
+                if (optionalExistedNode == head && optionalExistedNode == tail) {
+                    head = null;
+                    tail = null;
+                } else if (optionalExistedNode == head) { // если удаляемая нода является сейчас головой
+                    removeHead(optionalExistedNode);
+                    // если удаляемая нода сейчас является хвостом
+                } else if (optionalExistedNode == tail) {
+                    removeTail(optionalExistedNode);
+                    // если удаление происходит из середины
+                } else {
+                    removeFromMiddle(optionalExistedNode);
+                }
             }
-
         }
     }
 
     private void removeTail(Node optionalExistedNode) {
-        // запоминаем новый хвост (берем у текущего хвоста предыдущий элемент)
         Node nextTail = optionalExistedNode.previous;
-        // у ранее существующего хвоста обнуляем ссылку на предыдущий элемент
-        tail.previous = null;
-        // у запомненного нового хвоста обнуляем ссылку на следующий элемент
-        // (так как до этого он был не хвостом и ссылка на предыдущий элемент у него не была пустой)
-        nextTail.next = null;
-
-        // ранее вычисленный новый хвост запоминаем что это теперь хвост
         tail = nextTail;
+        if (tail != null){
+            tail.next = null;
+        }else{
+            System.out.println("Удалять нечего! Добавьте таску в историю!");
+        }
     }
 
     private void removeHead(Node optionalExistedNode) {
-        // запоминаем слудующую голову (берем из текущей головы следующий элемент)
         Node nextHead = optionalExistedNode.next;
-
-        // у текущей головы обнуляем ссылку на следующий элемент (help GC)
-        optionalExistedNode.next = null;
-
-        // ранее вычисленную новую голову запоминаем что это теперь голова
         head = nextHead;
+        if (head != null){
+            head.previous =null;
+        }
     }
 
     private void generateNewNode(Task task) {
@@ -134,12 +129,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         List<Task> tasksFromNodes = new ArrayList<>();
 
         if(head != null){
-            tasksFromNodes.add(head.task);
-            Node nextNode = head.next;
-
-            while (nextNode != null) {
-                tasksFromNodes.add(nextNode.task);
-                nextNode = nextNode.next;
+            Node node = head;
+            while (node != null) {
+                tasksFromNodes.add(node.task);
+                node = node.next;
             }
             return tasksFromNodes;
         }else{
