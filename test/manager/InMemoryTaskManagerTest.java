@@ -2,14 +2,12 @@ package manager;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import package_task.Epic;
-import package_task.Status;
-import package_task.Subtask;
-import package_task.Task;
+import package_Task.Epic;
+import package_Task.Status;
+import package_Task.Subtask;
+import package_Task.Task;
 
 import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 
