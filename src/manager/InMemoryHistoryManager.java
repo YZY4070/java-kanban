@@ -36,7 +36,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         // Если такая нода с такой таской вообще существует
         if (optionalExistedNode != null) {
             //(едиснтвенный элемент) - нода является и головой и хвостом
-            if (optionalExistedNode == head && optionalExistedNode == tail){
+            if (optionalExistedNode == head && optionalExistedNode == tail) {
                 head = null;
                 tail = null;
             } else if (optionalExistedNode == head) { // если удаляемая нода является сейчас головой
@@ -57,7 +57,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private void removeById(Integer id) {
         Node optionalExistedNode = idNodeMap.remove(id);
-        if (optionalExistedNode != null){
+        if (optionalExistedNode != null) {
             // Если такая нода с такой таской вообще существует
             if (optionalExistedNode.task != null) {
                 if (optionalExistedNode == head && optionalExistedNode == tail) {
@@ -79,9 +79,9 @@ public class InMemoryHistoryManager implements HistoryManager {
     private void removeTail(Node optionalExistedNode) {
         Node nextTail = optionalExistedNode.previous;
         tail = nextTail;
-        if (tail != null){
+        if (tail != null) {
             tail.next = null;
-        }else{
+        } else {
             System.out.println("Удалять нечего! Добавьте таску в историю!");
         }
     }
@@ -89,8 +89,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     private void removeHead(Node optionalExistedNode) {
         Node nextHead = optionalExistedNode.next;
         head = nextHead;
-        if (head != null){
-            head.previous =null;
+        if (head != null) {
+            head.previous = null;
         }
     }
 
@@ -116,11 +116,11 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void add (Task task) {
-        if(task != null){
+    public void add(Task task) {
+        if (task != null) {
             removeIfExists(task);
             generateNewNode(task);
-        }else{
+        } else {
             System.out.println("Вы пытаетесь добавить пустую таску!");
         }
     }
@@ -128,14 +128,14 @@ public class InMemoryHistoryManager implements HistoryManager {
     private List<Task> getAllTasksFromNodes() {
         List<Task> tasksFromNodes = new ArrayList<>();
 
-        if(head != null){
+        if (head != null) {
             Node node = head;
             while (node != null) {
                 tasksFromNodes.add(node.task);
                 node = node.next;
             }
             return tasksFromNodes;
-        }else{
+        } else {
             System.out.println("Возвращать нечего, список пуст! Добавьте в историю таску!");
             return tasksFromNodes;
         }

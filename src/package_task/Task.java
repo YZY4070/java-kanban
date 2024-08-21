@@ -1,4 +1,5 @@
 package package_task;
+
 import java.util.Objects;
 
 public class Task {
@@ -57,15 +58,15 @@ public class Task {
     }
 
     @Override
-    public boolean equals(Object obj){
+    public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Task newTask = (Task) obj;
-        return Objects.equals(id , newTask.id) && Objects.equals(name, newTask.name) && Objects.equals(description, newTask.description) && Objects.equals(status, newTask.status);
+        return Objects.equals(id, newTask.id) && Objects.equals(name, newTask.name) && Objects.equals(description, newTask.description) && Objects.equals(status, newTask.status);
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return Objects.hash(id, name, description, status);
     }
 }

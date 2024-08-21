@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class ManagersTest {
 
     @Test
-    public void shouldReturnNotNull(){
+    public void shouldReturnNotNull() {
         TaskManager taskManager = Managers.getDefault();
         HistoryManager historyManager = Managers.getDefaultHistoryManager();
         Assertions.assertNotNull(historyManager);
