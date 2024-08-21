@@ -2,10 +2,10 @@ package manager;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import package_Task.Epic;
-import package_Task.Status;
-import package_Task.Subtask;
-import package_Task.Task;
+import task.Epic;
+import task.Status;
+import task.Subtask;
+import task.Task;
 
 import java.util.Objects;
 
