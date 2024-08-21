@@ -54,7 +54,7 @@ public class InMemoryHistoryManagerTest {
         historyManager.add(epicLast);
 
         //Сам тест
-        historyManager.remove(epicFirst.getId());
+        taskManager.deleteEpicById(epicFirst.getId());
         Assertions.assertFalse(historyManager.getHistory().contains(epicFirst));
 
     }
@@ -99,8 +99,7 @@ public class InMemoryHistoryManagerTest {
         historyManager.add(epicLast);
 
         //Сам тест
-        historyManager.remove(epicMiddle.getId());
-        historyManager.getHistory();
+        taskManager.deleteEpicById(epicMiddle.getId());
         Assertions.assertFalse(historyManager.getHistory().contains(epicMiddle));
     }
 

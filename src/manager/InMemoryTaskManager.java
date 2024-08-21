@@ -91,143 +91,143 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     @Override
-public Subtask getSubtaskById(int id) {
-    historyManager.add(subtasks.get(id));
-    return subtasks.get(id);
-}
-
-@Override
-public void createSubtask(Subtask subtask) {
-    Epic epic = epics.get(subtask.getEpicId());
-    if (epic != null) {
-        int id = generateUniqueId();
-        subtask.setId(id);
-        subtasks.put(id, subtask);
-        epic.addSubtaskId(subtask.getId());
-        updateEpicStatus(epic);
-    } else {
-        System.out.println("У сабтаски неверно задан epicId к которому она должна принадлежать");
+    public Subtask getSubtaskById(int id) {
+        historyManager.add(subtasks.get(id));
+        return subtasks.get(id);
     }
-}
 
-@Override
-public void updateSubtask(Subtask subtask) {
-    Epic epic = epics.get(subtask.getEpicId());
-    if (epic == null) {
-        System.out.println("Эпик с ID " + subtask.getEpicId() + " не найден");
-        return;
-    }
-    subtasks.put(subtask.getId(), subtask);
-}
-
-
-@Override
-public void deleteSubtaskById(int id) {
-    Subtask subtask = subtasks.remove(id);
-    if (subtask != null) {
+    @Override
+    public void createSubtask(Subtask subtask) {
         Epic epic = epics.get(subtask.getEpicId());
-        epic.removeSubtaskId(subtask.getId());
-        updateEpicStatus(epic);
-        historyManager.remove(id);
+        if (epic != null) {
+            int id = generateUniqueId();
+            subtask.setId(id);
+            subtasks.put(id, subtask);
+            epic.addSubtaskId(subtask.getId());
+            updateEpicStatus(epic);
+        } else {
+            System.out.println("У сабтаски неверно задан epicId к которому она должна принадлежать");
+        }
     }
-}
 
-@Override
-public List<Epic> getAllEpics() {
-    return new ArrayList<>(epics.values());
-}
+    @Override
+    public void updateSubtask(Subtask subtask) {
+        Epic epic = epics.get(subtask.getEpicId());
+        if (epic == null) {
+            System.out.println("Эпик с ID " + subtask.getEpicId() + " не найден");
+            return;
+        }
+        subtasks.put(subtask.getId(), subtask);
+    }
 
-@Override
-public void deleteAllEpics() {
-    for (Epic epic : epics.values()) {
-        historyManager.remove(epic.getId());
-        for (Integer id : epic.getSubtaskIds()) {
+
+    @Override
+    public void deleteSubtaskById(int id) {
+        Subtask subtask = subtasks.remove(id);
+        if (subtask != null) {
+            Epic epic = epics.get(subtask.getEpicId());
+            epic.removeSubtaskId(subtask.getId());
+            updateEpicStatus(epic);
             historyManager.remove(id);
         }
     }
-    epics.clear();
-    subtasks.clear();
-}
 
-@Override
-public Epic getEpicById(int id) {
-    historyManager.add(epics.get(id));
-    return epics.get(id);
-}
+    @Override
+    public List<Epic> getAllEpics() {
+        return new ArrayList<>(epics.values());
+    }
 
-@Override
-public void createEpic(Epic epic) {
-    int id = generateUniqueId();
-    epic.setId(id);
-    epics.put(id, epic);
-}
+    @Override
+    public void deleteAllEpics() {
+        for (Epic epic : epics.values()) {
+            historyManager.remove(epic.getId());
+            for (Integer id : epic.getSubtaskIds()) {
+                historyManager.remove(id);
+            }
+        }
+        epics.clear();
+        subtasks.clear();
+    }
 
-@Override
-public void updateEpic(Epic newEpic) {
-    Epic exisEpic = epics.get(newEpic.getId());
-    if (exisEpic != null) {
-        exisEpic.setName(newEpic.getName());/*у меня вылетело из головы что мы получаем ссылку на объект,
+    @Override
+    public Epic getEpicById(int id) {
+        historyManager.add(epics.get(id));
+        return epics.get(id);
+    }
+
+    @Override
+    public void createEpic(Epic epic) {
+        int id = generateUniqueId();
+        epic.setId(id);
+        epics.put(id, epic);
+    }
+
+    @Override
+    public void updateEpic(Epic newEpic) {
+        Epic exisEpic = epics.get(newEpic.getId());
+        if (exisEpic != null) {
+            exisEpic.setName(newEpic.getName());/*у меня вылетело из головы что мы получаем ссылку на объект,
              а не копируем полностью весь объект в новый. Я чуть не сошел с ума на этот моменте, иногда такое вылетает
              из головы и это очень печально, ведь останавливает тебя очень надолго*/
-        exisEpic.setDescription(newEpic.getDescription());
-    }
-}
-
-@Override
-public void deleteEpicById(int id) {
-    Epic epic = epics.remove(id);
-    if (epic != null) {
-        for (int subtaskId : epic.getSubtaskIds()) {
-            subtasks.remove(subtaskId);
-            historyManager.remove(id); // удаление
-        }
-    }
-    historyManager.remove(id);
-}
-
-@Override
-public List<Subtask> getSubtasksByEpicId(int epicId) {
-    List<Subtask> result = new ArrayList<>();
-    Epic epic = epics.get(epicId);
-    if (epic != null) {
-        for (int subtaskId : epic.getSubtaskIds()) {
-            result.add(subtasks.get(subtaskId));
-        }
-    }
-    return result;
-}
-
-private void updateEpicStatus(Epic epic) {
-    List<Integer> subtaskIds = epic.getSubtaskIds();
-    if (subtaskIds.isEmpty()) {
-        epic.setStatus(Status.NEW);
-        return;
-    }
-
-    boolean allNew = true;
-    boolean allDone = true;
-
-    for (int id : subtaskIds) {
-        Status status = subtasks.get(id).getStatus();
-        if (status != Status.NEW) {
-            allNew = false;
-        }
-        if (status != Status.DONE) {
-            allDone = false;
+            exisEpic.setDescription(newEpic.getDescription());
         }
     }
 
-    if (allNew) {
-        epic.setStatus(Status.NEW);
-    } else if (allDone) {
-        epic.setStatus(Status.DONE);
-    } else {
-        epic.setStatus(Status.IN_PROGRESS);
+    @Override
+    public void deleteEpicById(int id) {
+        Epic epic = epics.remove(id);
+        if (epic != null) {
+            for (int subtaskId : epic.getSubtaskIds()) {
+                subtasks.remove(subtaskId);
+                historyManager.remove(id); // удаление
+            }
+        }
+        historyManager.remove(id);
     }
-}
 
-public List<Task> getHistory() {
-    return historyManager.getHistory();
-}
+    @Override
+    public List<Subtask> getSubtasksByEpicId(int epicId) {
+        List<Subtask> result = new ArrayList<>();
+        Epic epic = epics.get(epicId);
+        if (epic != null) {
+            for (int subtaskId : epic.getSubtaskIds()) {
+                result.add(subtasks.get(subtaskId));
+            }
+        }
+        return result;
+    }
+
+    private void updateEpicStatus(Epic epic) {
+        List<Integer> subtaskIds = epic.getSubtaskIds();
+        if (subtaskIds.isEmpty()) {
+            epic.setStatus(Status.NEW);
+            return;
+        }
+
+        boolean allNew = true;
+        boolean allDone = true;
+
+        for (int id : subtaskIds) {
+            Status status = subtasks.get(id).getStatus();
+            if (status != Status.NEW) {
+                allNew = false;
+            }
+            if (status != Status.DONE) {
+                allDone = false;
+            }
+        }
+
+        if (allNew) {
+            epic.setStatus(Status.NEW);
+        } else if (allDone) {
+            epic.setStatus(Status.DONE);
+        } else {
+            epic.setStatus(Status.IN_PROGRESS);
+        }
+    }
+
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
+    }
 }
 
