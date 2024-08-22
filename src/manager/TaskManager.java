@@ -1,8 +1,8 @@
 package manager;
 
-import package_task.Epic;
-import package_task.Subtask;
-import package_task.Task;
+import task.Epic;
+import task.Subtask;
+import task.Task;
 
 import java.util.List;
 
@@ -45,5 +45,5 @@ public interface TaskManager {
 
     List<Subtask> getSubtasksByEpicId(int epicId);
 
-
+    List<Task> getHistory();
 }

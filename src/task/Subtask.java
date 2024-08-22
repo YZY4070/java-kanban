@@ -1,4 +1,4 @@
-package package_task;
+package task;
 
 public class Subtask extends Task {
     private int epicId;
