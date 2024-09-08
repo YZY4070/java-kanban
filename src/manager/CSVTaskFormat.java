@@ -2,8 +2,6 @@ package manager;
 
 import task.*;
 
-import java.util.List;
-
 public class CSVTaskFormat {
 
     public static String header() {
