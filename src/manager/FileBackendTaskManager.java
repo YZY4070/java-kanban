@@ -23,36 +23,39 @@ public class FileBackendTaskManager extends InMemoryTaskManager {
             writer.write(CSVTaskFormat.header());
             writer.newLine();
 
-            for (Map.Entry<Integer, Task> entry : tasks.entrySet()) {
-                final Task task = entry.getValue();
+            for (Task task : epics.values()) {
                 writer.write(CSVTaskFormat.toString(task));
                 writer.newLine();
             }
 
-            for (Map.Entry<Integer, Subtask> entry : subtasks.entrySet()) {
-                final Task task = entry.getValue();
+            for (Task task : subtasks.values()) {
                 writer.write(CSVTaskFormat.toString(task));
                 writer.newLine();
             }
 
-            for (Map.Entry<Integer, Epic> entry : epics.entrySet()) {
-                final Task task = entry.getValue();
+            for (Task task : tasks.values()) {
                 writer.write(CSVTaskFormat.toString(task));
                 writer.newLine();
             }
+
+
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ManagerSaveException("Ошибка при чтении файла" + file.getName());
         }
     }
 
     public static FileBackendTaskManager loadFromFile(File file) {
         final FileBackendTaskManager taskManager = new FileBackendTaskManager(file);
+        int maxId = 0;
         try {
             final String csv = Files.readString(file.toPath());
             final String[] lines = csv.split(System.lineSeparator());
             for (String line : lines) {
                 if (!line.equals(CSVTaskFormat.header())) {
                     Task task = CSVTaskFormat.taskFromString(line);
+                    if (task.getId() > maxId) {
+                        maxId = task.getId();
+                    }
                     if (task instanceof Epic) {
                         taskManager.epics.put(task.getId(), (Epic) task);
                     } else if (task instanceof Subtask) {
@@ -67,8 +70,9 @@ public class FileBackendTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Ошибка при чтении файла" + e.getMessage());
+            throw new ManagerSaveException("Ошибка при чтении файла" + e.getMessage());
         }
+        taskManager.setNextId(maxId + 1);
         return taskManager;
     }
 
@@ -143,11 +147,4 @@ public class FileBackendTaskManager extends InMemoryTaskManager {
         super.deleteAllEpics();
         save();
     }
-
-    @Override
-    public void updateEpicStatus(Epic epic) {
-        super.updateEpicStatus(epic);
-        save();
-    }
-
 }

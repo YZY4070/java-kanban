@@ -20,6 +20,10 @@ public class InMemoryTaskManager implements TaskManager {
         this.historyManager = historyManager;
     }
 
+    public void setNextId(Integer value) {
+        nextId = value;
+    }
+
 
     private int generateUniqueId() {
         return nextId++;
