@@ -34,5 +34,7 @@ public class Main {
 
         manager.deleteTaskById(task1.getId());
         System.out.println("Все задачи после удаления: " + manager.getAllTasks());
+
+        System.out.println(CSVTaskFormat.toString(task1));
     }
 }
