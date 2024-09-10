@@ -4,12 +4,6 @@ import task.*;
 
 public class CSVTaskFormat {
 
-    public enum TaskType {
-        EPIC,
-        TASK,
-        SUBTASK
-    }
-
     public static String header() {
         return "id,type,name,status,description,epic";
     }
