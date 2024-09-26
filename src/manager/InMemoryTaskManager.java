@@ -94,7 +94,6 @@ public class InMemoryTaskManager implements TaskManager {
             int id = generateUniqueId();
             task.setId(id);
             tasks.put(id, task);
-            addPrioritizedTaskWithCheck(task);
         } else {
             System.out.println("Пересечение найдено! Введите нормальное время у таски.");
         }
@@ -104,7 +103,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateTask(Task task) {
         if (tasks.containsKey(task.getId())) {
             tasks.put(task.getId(), task);
-            addPrioritizedTaskWithCheck(task);
         } else {
             System.out.println("Таски под таким id нету, воспользуйтесь добавлением");
         }
@@ -219,6 +217,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createEpic(Epic epic) {
+        epic.calculateEpicFields(this);
         Optional<Epic> epicOptional = epics.values().stream()
                 .filter(taskFromMap -> isTimeOverLap(epic, taskFromMap))
                 .findAny();
@@ -226,7 +225,6 @@ public class InMemoryTaskManager implements TaskManager {
             int id = generateUniqueId();
             epic.setId(id);
             epics.put(id, epic);
-            prioritizedTasks.add(epic);
         } else {
             System.out.println("Пересечение найдено");
         }
