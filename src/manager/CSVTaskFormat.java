@@ -2,10 +2,13 @@ package manager;
 
 import task.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class CSVTaskFormat {
 
     public static String header() {
-        return "id,type,name,status,description,epic";
+        return "id,type,name,status,description,startTime,duration,epic";
     }
 
     public static String toString(Task task) {
@@ -25,6 +28,8 @@ public class CSVTaskFormat {
                 task.getName() + "," +
                 task.getStatus() + "," +
                 task.getDescription() + "," +
+                task.getStartTime() + "," +
+                task.getDuration().toMinutes() + "," +
                 epicField;
     }
 
@@ -40,10 +45,14 @@ public class CSVTaskFormat {
             case TaskType.EPIC:
                 return new Epic(id, name, description, status);
             case TaskType.SUBTASK:
-                final int epicId = Integer.parseInt(values[5]);
-                return new Subtask(id, name, description, status, epicId);
+                final int epicId = Integer.parseInt(values[7]);
+                LocalDateTime startTime = LocalDateTime.parse(values[5]);
+                Duration duration = Duration.ofMinutes(Long.parseLong(values[6]));
+                return new Subtask(id, name, description, status, epicId, startTime, duration);
             case TaskType.TASK:
-                return new Task(id, name, description, status);
+                LocalDateTime startTimeTask = LocalDateTime.parse(values[5]);
+                Duration durationTask = Duration.ofMinutes(Long.parseLong(values[6]));
+                return new Task(id, name, description, status, startTimeTask, durationTask);
             default:
                 throw new IllegalArgumentException("Неизвестный вид таски: " + type);
         }
