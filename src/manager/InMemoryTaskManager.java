@@ -17,13 +17,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     private final Set<Task> prioritizedTasks = new TreeSet<>((task1, task2) -> {
         if (task1.getStartTime() == null && task2.getStartTime() == null) {
-            return 0;
+            return -1;
         } else if (task1.getStartTime() == null) {
-            return 1;  // task1 уходит в конец списка
+            return -1;  // task1 уходит в конец списка
         } else if (task2.getStartTime() == null) {
-            return -1; // task2 уходит в конец списка
+            return 1; // task2 уходит в конец списка
         }
 
+        if (task1.getStartTime() != null && task2.getStartTime() != null) {
+            return task1.getStartTime().compareTo(task2.getStartTime());
+        }
         // Проверяем пересечение времени выполнения
         if (isTimeOverLap(task1, task2)) {
             throw new IllegalArgumentException("Задачи пересекаются по времени выполнения");
