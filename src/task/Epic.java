@@ -46,6 +46,13 @@ public class Epic extends Task {
 
         List<Subtask> subtasks = taskManager.getSubtasksByEpicId(this.id);
 
+        if (subtasks.isEmpty()) {
+            this.startTime = null;
+            this.endTime = null;
+            this.duration = Duration.ZERO;
+            return;
+        }
+
         this.startTime = subtasks.stream()
                 .map(Subtask::getStartTime)
                 .filter(Objects::nonNull)
@@ -63,5 +70,4 @@ public class Epic extends Task {
             this.duration = Duration.ZERO;
         }
     }
-
 }

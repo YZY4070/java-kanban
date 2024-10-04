@@ -16,6 +16,8 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HistoryManager historyManager;
 
     private final Set<Task> prioritizedTasks = new TreeSet<>((task1, task2) -> {
+        if (task1.equals(task2)) return 0;
+
         if (task1.getStartTime() == null && task2.getStartTime() == null) {
             return 0;
         } else if (task1.getStartTime() == null) {
@@ -39,16 +41,25 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime start2 = task2.getStartTime();
         LocalDateTime end2 = task2.getEndTime();
 
-        return start1 != null && start2 != null && (start1.isBefore(end2) && start2.isBefore(end1));
+        // Проверка на null для времени окончания
+        if (start1 == null || end1 == null || start2 == null || end2 == null) {
+            return false;  // Невозможно проверить пересечение, если время неизвестно
+        }
+
+        // Проверка пересечения интервалов
+        return start1.isBefore(end2) && start2.isBefore(end1);
     }
 
+
     private void addPrioritizedTaskWithCheck(Task task) {
-        if (task.getStartTime() != null) {
+        if (task.getStartTime() != null && task.getDuration() != null) {
             prioritizedTasks.add(task);
+        } else {
+            System.out.println("Задача не была добавлена в список приоритетов, так как не содержит времени начала.");
         }
     }
 
-    private Set<Task> getPrioritizedTasks() {
+    public Set<Task> getPrioritizedTasks() {
         return prioritizedTasks;
     }
 
@@ -87,16 +98,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createTask(Task task) {
-        Optional<Task> taskOptional = tasks.values().stream()
-                .filter(taskFromMap -> isTimeOverLap(task, taskFromMap))
-                .findAny();
-        if (!taskOptional.isPresent()) {
-            int id = generateUniqueId();
-            task.setId(id);
-            tasks.put(id, task);
-        } else {
-            System.out.println("Пересечение найдено! Введите нормальное время у таски.");
-        }
+        int id = generateUniqueId();
+        task.setId(id);
+        addPrioritizedTaskWithCheck(task);
+        tasks.put(id, task);
+
     }
 
     @Override
@@ -152,19 +158,13 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Нет епика которому принадлежит сабтаска!");
             return;
         }
-        Optional<Subtask> subtaskOptional = subtasks.values().stream()
-                .filter(taskFromMap -> isTimeOverLap(subtask, taskFromMap))
-                .findAny();
-        if (!subtaskOptional.isPresent()) {
-            int id = generateUniqueId();
-            subtask.setId(id);
-            subtasks.put(id, subtask);
-            epic.addSubtaskId(subtask.getId());
-            updateEpicStatus(epic);
-            epic.calculateEpicFields(this); //2
-        } else {
-            System.out.println("Пересечения найдено!");
-        }
+        int id = generateUniqueId();
+        subtask.setId(id);
+        subtasks.put(id, subtask);
+        epic.addSubtaskId(subtask.getId());
+        updateEpicStatus(epic);
+        epic.calculateEpicFields(this); //2
+
     }
 
     @Override
@@ -177,7 +177,6 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.put(subtask.getId(), subtask);
         epic.calculateEpicFields(this); //3
     }
-
 
     @Override
     public void deleteSubtaskById(int id) {
@@ -218,16 +217,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void createEpic(Epic epic) {
         epic.calculateEpicFields(this);
-        Optional<Epic> epicOptional = epics.values().stream()
-                .filter(taskFromMap -> isTimeOverLap(epic, taskFromMap))
-                .findAny();
-        if (!epicOptional.isPresent()) {
-            int id = generateUniqueId();
-            epic.setId(id);
-            epics.put(id, epic);
-        } else {
-            System.out.println("Пересечение найдено");
-        }
+        int id = generateUniqueId();
+        epic.setId(id);
+        addPrioritizedTaskWithCheck(epic);
+        epics.put(id, epic);
+
     }
 
     @Override
@@ -236,6 +230,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (exisEpic != null) {
             exisEpic.setName(newEpic.getName());
             exisEpic.setDescription(newEpic.getDescription());
+            exisEpic.calculateEpicFields(this);
         }
     }
 
