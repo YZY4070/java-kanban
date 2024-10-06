@@ -20,7 +20,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         if (task1.getStartTime() == null && task2.getStartTime() == null) {
             return 0;
-        } else if (task1.equals(task2)){
+        } else if (task1.equals(task2)) {
             return 0;
         } else if (task1.getStartTime() == null) {
             return 1;  // task1 уходит в конец списка
