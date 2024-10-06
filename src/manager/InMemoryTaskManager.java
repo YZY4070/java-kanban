@@ -31,7 +31,8 @@ public class InMemoryTaskManager implements TaskManager {
         // Проверяем пересечение времени выполнения
         if (isTimeOverLap(task1, task2)) {
             throw new IllegalArgumentException("Задачи пересекаются по времени выполнения");
-        }// После того как проверилось на пересечения идет добавление
+            // После того как проверилось на пересечения идет добавление
+        }
 
         // Сортировка по времени начала
         return task1.getStartTime().compareTo(task2.getStartTime());
