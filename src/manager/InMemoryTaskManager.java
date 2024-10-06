@@ -16,9 +16,11 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HistoryManager historyManager;
 
     private final Set<Task> prioritizedTasks = new TreeSet<>((task1, task2) -> {
-        if (task1.equals(task2)) return 0;
+//        if (task1.equals(task2)) return 0;
 
         if (task1.getStartTime() == null && task2.getStartTime() == null) {
+            return 0;
+        } else if (task1.equals(task2)){
             return 0;
         } else if (task1.getStartTime() == null) {
             return 1;  // task1 уходит в конец списка
@@ -164,6 +166,7 @@ public class InMemoryTaskManager implements TaskManager {
         epic.addSubtaskId(subtask.getId());
         updateEpicStatus(epic);
         epic.calculateEpicFields(this); //2
+        addPrioritizedTaskWithCheck(epic);
 
     }
 
@@ -244,7 +247,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
         historyManager.remove(id);
-        prioritizedTasks.remove(epics.get(id));
+        prioritizedTasks.remove(epic);
     }
 
     @Override

@@ -81,8 +81,8 @@ public class InMemoryHistoryManagerTest {
         Subtask subtask5 = new Subtask(5, "subtask5", "testSubtask", Status.NEW, epicLast.getId(), LocalDateTime.of(2020, 1, 1, 13, 0), Duration.ofMinutes(30));
         Subtask subtask6 = new Subtask(6, "subtask6", "testSubtask", Status.NEW, epicLast.getId(), LocalDateTime.of(2020, 1, 1 , 14, 0), Duration.ofMinutes(49));
 
-        HistoryManager historyManager = Managers.getDefaultHistoryManager();
-        TaskManager taskManager = new InMemoryTaskManager(historyManager);
+        InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager(historyManager);
 
         taskManager.createTask(task1);
         taskManager.createTask(task2);
@@ -139,6 +139,13 @@ public class InMemoryHistoryManagerTest {
         taskManager.createEpic(epicFirst);
         taskManager.createEpic(epicMiddle);
         taskManager.createEpic(epicLast);
+
+        taskManager.createSubtask(subtask1);
+        taskManager.createSubtask(subtask2);
+        taskManager.createSubtask(subtask3);
+        taskManager.createSubtask(subtask4);
+        taskManager.createSubtask(subtask5);
+        taskManager.createSubtask(subtask6);
 
 
         historyManager.add(epicFirst);
