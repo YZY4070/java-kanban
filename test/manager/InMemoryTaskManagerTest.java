@@ -7,25 +7,32 @@ import task.Status;
 import task.Subtask;
 import task.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-class InMemoryTaskManagerTest {
+class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
+
+    @Override
+    protected InMemoryTaskManager createTaskManager() {
+        return new InMemoryTaskManager(Managers.getDefaultHistoryManager());
+    }
 
     @Test
     public void createTaskShouldExisInTaskManager() {
-        Task task = new Task(1, "name", "description", Status.NEW);
-        TaskManager taskManager = Managers.getDefault();
+        Task task = new Task(1, "Task 1", "Description 1", Status.NEW, LocalDateTime.of(2022, 11, 6, 13, 30), Duration.ofMinutes(30));
+        TaskManager taskManager = createTaskManager();
         taskManager.createTask(task);
         Assertions.assertTrue(Objects.equals(task, taskManager.getTaskById(1)));
     }
 
     @Test
     public void shouldAddAndSearch() {
-        TaskManager taskManager = Managers.getDefault();
+        InMemoryTaskManager taskManager = createTaskManager();
 
-        Task task1 = new Task(1, "name", "description", Status.NEW);
+        Task task1 = new Task(1, "Task 1", "Description 1", Status.NEW, LocalDateTime.of(2022, 11, 6, 13, 30), Duration.ofMinutes(30));
         Epic epic = new Epic(2, "name", "description", Status.NEW);
-        Subtask subtask = new Subtask(3, "name", "description", Status.NEW, 2);
+        Subtask subtask = new Subtask(3, "name", "description", Status.NEW, epic.getId(), LocalDateTime.of(2024, 9, 13, 15, 30), Duration.ofMinutes(120));
 
         taskManager.createTask(task1);
         taskManager.createEpic(epic);
@@ -35,4 +42,6 @@ class InMemoryTaskManagerTest {
         Assertions.assertNotNull(taskManager.getEpicById(2));
         Assertions.assertNotNull(taskManager.getSubtaskById(3));
     }
+
+
 }

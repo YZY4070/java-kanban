@@ -1,7 +1,6 @@
 package manager;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.Epic;
 import task.Status;
@@ -11,20 +10,35 @@ import task.Task;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackendTaskManagerTest {
+class FileBackendTaskManagerTest extends TaskManagerTest<FileBackendTaskManager> {
     private FileBackendTaskManager taskManager;
     private File file;
 
-    @BeforeEach
-    void setUp() throws IOException {
-        // Создаем временный файл для каждого теста
-        file = File.createTempFile("task_manager_test", ".csv");
-        taskManager = new FileBackendTaskManager(file);
+
+    @Override
+    protected FileBackendTaskManager createTaskManager() {
+        try {
+            file = File.createTempFile("task_manager_test", ".csv");
+            taskManager = new FileBackendTaskManager(file);
+            return taskManager;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
+//    @BeforeEach
+//    void setUp() throws IOException {
+//        // Создаем временный файл для каждого теста
+//        file = File.createTempFile("task_manager_test", ".csv");
+//        taskManager = createTaskManager();
+//    }
 
     @AfterEach
     void tearDown() throws IOException {
@@ -56,10 +70,10 @@ class FileBackendTaskManagerTest {
     @Test
     void testSaveMultipleTasks() throws IOException {
         // Создаем несколько задач
-        Task task1 = new Task(1, "Task 1", "Description 1", Status.NEW);
-        Task task2 = new Task(2, "Task 2", "Description 2", Status.IN_PROGRESS);
+        Task task1 = new Task(1, "Task 1", "Description 1", Status.NEW, LocalDateTime.of(2022, 11, 6, 13, 30), Duration.ofMinutes(30));
+        Task task2 = new Task(2, "Task 2", "Description 2", Status.IN_PROGRESS, LocalDateTime.of(2022, 10, 3, 12, 10), Duration.ofMinutes(54));
         Epic epic1 = new Epic(3, "Epic 1", "Epic Description", Status.NEW);
-        Subtask subtask1 = new Subtask(4, "Subtask 1", "Subtask Description", Status.NEW, epic1.getId());
+        Subtask subtask1 = new Subtask(4, "Subtask 1", "Subtask Description", Status.NEW, epic1.getId(), LocalDateTime.of(2021, 3, 10, 13, 30), Duration.ofMinutes(30));
 
         // Сохраняем их в менеджере задач
         taskManager.createTask(task1);
@@ -126,8 +140,8 @@ class FileBackendTaskManagerTest {
     @Test
     void testLoadMultipleTasks() {
         // Создаем несколько задач и сохраняем их
-        Task task1 = new Task(0, "Task 1", "Description 1", Status.NEW);
-        Task task2 = new Task(0, "Task 2", "Description 2", Status.IN_PROGRESS);
+        Task task1 = new Task(1, "Task 1", "Description 1", Status.NEW, LocalDateTime.of(2022, 9, 6, 13, 30), Duration.ofMinutes(30));
+        Task task2 = new Task(2, "Task 2", "Description 2", Status.IN_PROGRESS, LocalDateTime.of(2022, 10, 3, 12, 10), Duration.ofMinutes(54));
         taskManager.createTask(task1);
         taskManager.createTask(task2);
 
