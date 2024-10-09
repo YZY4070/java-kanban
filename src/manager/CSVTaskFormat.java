@@ -43,7 +43,9 @@ public class CSVTaskFormat {
 
         switch (type) {
             case TaskType.EPIC:
-                return new Epic(id, name, description, status);
+                LocalDateTime startTimeEpic = LocalDateTime.parse(values[5]);
+                Duration durationEpic = Duration.ofMinutes(Long.parseLong(values[6]));
+                return new Epic(id, name, description, status, startTimeEpic, durationEpic);
             case TaskType.SUBTASK:
                 final int epicId = Integer.parseInt(values[7]);
                 LocalDateTime startTime = LocalDateTime.parse(values[5]);

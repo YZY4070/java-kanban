@@ -1,7 +1,6 @@
 package manager;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.Epic;
 import task.Status;
@@ -17,16 +16,29 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackendTaskManagerTest {
+class FileBackendTaskManagerTest extends TaskManagerTest<FileBackendTaskManager> {
     private FileBackendTaskManager taskManager;
     private File file;
 
-    @BeforeEach
-    void setUp() throws IOException {
-        // Создаем временный файл для каждого теста
-        file = File.createTempFile("task_manager_test", ".csv");
-        taskManager = new FileBackendTaskManager(file);
+
+    @Override
+    protected FileBackendTaskManager createTaskManager() {
+        try {
+            file = File.createTempFile("task_manager_test", ".csv");
+            taskManager = new FileBackendTaskManager(file);
+            return taskManager;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
+//    @BeforeEach
+//    void setUp() throws IOException {
+//        // Создаем временный файл для каждого теста
+//        file = File.createTempFile("task_manager_test", ".csv");
+//        taskManager = createTaskManager();
+//    }
 
     @AfterEach
     void tearDown() throws IOException {

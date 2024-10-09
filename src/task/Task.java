@@ -21,6 +21,23 @@ public class Task {
         this.duration = duration;
     }
 
+    public Task(int id, String name, String description, Status status){
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.startTime = LocalDateTime.MIN;
+        this.duration = Duration.ZERO;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     public int getId() {
         return id;
     }
