@@ -30,6 +30,7 @@ public class CSVTaskFormat {
                 task.getDescription() + "," +
                 task.getStartTime() + "," +
                 task.getDuration().toMinutes() + "," +
+                task.getEndTime() + "," +
                 epicField;
     }
 
@@ -45,9 +46,10 @@ public class CSVTaskFormat {
             case TaskType.EPIC:
                 LocalDateTime startTimeEpic = LocalDateTime.parse(values[5]);
                 Duration durationEpic = Duration.ofMinutes(Long.parseLong(values[6]));
-                return new Epic(id, name, description, status, startTimeEpic, durationEpic);
+                LocalDateTime endTimeEpic = LocalDateTime.parse(values[7]);
+                return new Epic(id, name, description, status, startTimeEpic, durationEpic, endTimeEpic);
             case TaskType.SUBTASK:
-                final int epicId = Integer.parseInt(values[7]);
+                final int epicId = Integer.parseInt(values[8]);
                 LocalDateTime startTime = LocalDateTime.parse(values[5]);
                 Duration duration = Duration.ofMinutes(Long.parseLong(values[6]));
                 return new Subtask(id, name, description, status, epicId, startTime, duration);

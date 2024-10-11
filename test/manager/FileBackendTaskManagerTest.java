@@ -99,12 +99,18 @@ class FileBackendTaskManagerTest extends TaskManagerTest<FileBackendTaskManager>
         assertEquals(task1.getName(), loadedTask1.getName());
         assertEquals(task1.getDescription(), loadedTask1.getDescription());
         assertEquals(task1.getStatus(), loadedTask1.getStatus());
+        assertEquals(task1.getStartTime(), loadedTask1.getStartTime());
+        assertEquals(task1.getDuration(), loadedTask1.getDuration());
+        assertEquals(task1.getEndTime(), loadedTask1.getEndTime());
 
         // Проверка всех полей для task2
         assertEquals(task2.getId(), loadedTask2.getId());
         assertEquals(task2.getName(), loadedTask2.getName());
         assertEquals(task2.getDescription(), loadedTask2.getDescription());
         assertEquals(task2.getStatus(), loadedTask2.getStatus());
+        assertEquals(task2.getStartTime(), loadedTask2.getStartTime());
+        assertEquals(task2.getDuration(), loadedTask2.getDuration());
+        assertEquals(task2.getEndTime(), loadedTask2.getEndTime());
 
         // Проверяем эпики
         List<Epic> loadedEpics = loadedTaskManager.getAllEpics();
@@ -117,6 +123,9 @@ class FileBackendTaskManagerTest extends TaskManagerTest<FileBackendTaskManager>
         assertEquals(epic1.getName(), loadedEpic1.getName());
         assertEquals(epic1.getDescription(), loadedEpic1.getDescription());
         assertEquals(epic1.getStatus(), loadedEpic1.getStatus());
+        assertEquals(epic1.getStartTime(), loadedEpic1.getStartTime());
+        assertEquals(epic1.getDuration(), loadedEpic1.getDuration());
+        assertEquals(epic1.getEndTime(), loadedEpic1.getEndTime());
 
         // Проверяем подзадачи
         List<Subtask> loadedSubtasks = loadedTaskManager.getAllSubtasks();
@@ -130,6 +139,9 @@ class FileBackendTaskManagerTest extends TaskManagerTest<FileBackendTaskManager>
         assertEquals(subtask1.getDescription(), loadedSubtask1.getDescription());
         assertEquals(subtask1.getStatus(), loadedSubtask1.getStatus());
         assertEquals(subtask1.getEpicId(), loadedSubtask1.getEpicId());
+        assertEquals(subtask1.getStartTime(), loadedSubtask1.getStartTime());
+        assertEquals(subtask1.getDuration(), loadedSubtask1.getDuration());
+        assertEquals(subtask1.getEndTime(), loadedSubtask1.getEndTime());
 
         // Проверка связи подзадачи с эпиком
         assertEquals(1, loadedEpic1.getSubtaskIds().size());
