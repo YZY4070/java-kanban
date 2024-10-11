@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class CSVTaskFormat {
 
     public static String header() {
-        return "id,type,name,status,description,startTime,duration,epic";
+        return "id,type,name,status,description,startTime,duration,endTime,epic";
     }
 
     public static String toString(Task task) {

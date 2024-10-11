@@ -33,13 +33,6 @@ class FileBackendTaskManagerTest extends TaskManagerTest<FileBackendTaskManager>
         }
     }
 
-//    @BeforeEach
-//    void setUp() throws IOException {
-//        // Создаем временный файл для каждого теста
-//        file = File.createTempFile("task_manager_test", ".csv");
-//        taskManager = createTaskManager();
-//    }
-
     @AfterEach
     void tearDown() throws IOException {
         // Удаляем временный файл после каждого теста
@@ -74,6 +67,7 @@ class FileBackendTaskManagerTest extends TaskManagerTest<FileBackendTaskManager>
         Task task2 = new Task(2, "Task 2", "Description 2", Status.IN_PROGRESS, LocalDateTime.of(2022, 10, 3, 12, 10), Duration.ofMinutes(54));
         Epic epic1 = new Epic(3, "Epic 1", "Epic Description", Status.NEW);
         Subtask subtask1 = new Subtask(4, "Subtask 1", "Subtask Description", Status.NEW, epic1.getId(), LocalDateTime.of(2021, 3, 10, 13, 30), Duration.ofMinutes(30));
+        Subtask subtask2 = new Subtask(5, "Subtask 1", "Subtask Description", Status.NEW, epic1.getId(), LocalDateTime.of(2021, 3, 10, 15, 30), Duration.ofMinutes(30));
 
         // Сохраняем их в менеджере задач
         taskManager.createTask(task1);

@@ -114,12 +114,11 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
 
-        prioritizedTasks.remove(tasks.get(task.getId()));
-
         if (prioritizedTaskOverlapCkeck(tasks.get(task.getId()))) {
             throw new RuntimeException("Найдено пересечение задач");
         }
 
+        prioritizedTasks.remove(tasks.get(task.getId()));
         addPrioritizedTaskWithCheck(task);
         tasks.put(task.getId(), task);
     }
@@ -144,8 +143,8 @@ public class InMemoryTaskManager implements TaskManager {
         epics.values().forEach(epic -> {
             epic.getSubtaskIds().forEach(historyManager::remove);
             updateEpicStatus(epic);
-            calculateEpicFields(epic);
             epic.getSubtaskIds().clear();
+            calculateEpicFields(epic);
         });
         subtasks.clear();
         prioritizedTasks.removeIf(task -> task instanceof Subtask);
@@ -252,10 +251,10 @@ public class InMemoryTaskManager implements TaskManager {
             for (int subtaskId : epic.getSubtaskIds()) {
                 subtasks.remove(subtaskId);
                 historyManager.remove(id); // удаление
+                prioritizedTasks.remove(subtasks.get(subtaskId));
             }
         }
         historyManager.remove(id);
-        prioritizedTasks.remove(epic);
     }
 
     @Override
