@@ -1,7 +1,6 @@
 package manager;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.Epic;
 import task.Status;
@@ -11,19 +10,27 @@ import task.Task;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackendTaskManagerTest {
+class FileBackendTaskManagerTest extends TaskManagerTest<FileBackendTaskManager> {
     private FileBackendTaskManager taskManager;
     private File file;
 
-    @BeforeEach
-    void setUp() throws IOException {
-        // Создаем временный файл для каждого теста
-        file = File.createTempFile("task_manager_test", ".csv");
-        taskManager = new FileBackendTaskManager(file);
+
+    @Override
+    protected FileBackendTaskManager createTaskManager() {
+        try {
+            file = File.createTempFile("task_manager_test", ".csv");
+            taskManager = new FileBackendTaskManager(file);
+            return taskManager;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @AfterEach
@@ -56,10 +63,11 @@ class FileBackendTaskManagerTest {
     @Test
     void testSaveMultipleTasks() throws IOException {
         // Создаем несколько задач
-        Task task1 = new Task(1, "Task 1", "Description 1", Status.NEW);
-        Task task2 = new Task(2, "Task 2", "Description 2", Status.IN_PROGRESS);
+        Task task1 = new Task(1, "Task 1", "Description 1", Status.NEW, LocalDateTime.of(2022, 11, 6, 13, 30), Duration.ofMinutes(30));
+        Task task2 = new Task(2, "Task 2", "Description 2", Status.IN_PROGRESS, LocalDateTime.of(2022, 10, 3, 12, 10), Duration.ofMinutes(54));
         Epic epic1 = new Epic(3, "Epic 1", "Epic Description", Status.NEW);
-        Subtask subtask1 = new Subtask(4, "Subtask 1", "Subtask Description", Status.NEW, epic1.getId());
+        Subtask subtask1 = new Subtask(4, "Subtask 1", "Subtask Description", Status.NEW, epic1.getId(), LocalDateTime.of(2021, 3, 10, 13, 30), Duration.ofMinutes(30));
+        Subtask subtask2 = new Subtask(5, "Subtask 1", "Subtask Description", Status.NEW, epic1.getId(), LocalDateTime.of(2021, 3, 10, 15, 30), Duration.ofMinutes(30));
 
         // Сохраняем их в менеджере задач
         taskManager.createTask(task1);
@@ -85,12 +93,18 @@ class FileBackendTaskManagerTest {
         assertEquals(task1.getName(), loadedTask1.getName());
         assertEquals(task1.getDescription(), loadedTask1.getDescription());
         assertEquals(task1.getStatus(), loadedTask1.getStatus());
+        assertEquals(task1.getStartTime(), loadedTask1.getStartTime());
+        assertEquals(task1.getDuration(), loadedTask1.getDuration());
+        assertEquals(task1.getEndTime(), loadedTask1.getEndTime());
 
         // Проверка всех полей для task2
         assertEquals(task2.getId(), loadedTask2.getId());
         assertEquals(task2.getName(), loadedTask2.getName());
         assertEquals(task2.getDescription(), loadedTask2.getDescription());
         assertEquals(task2.getStatus(), loadedTask2.getStatus());
+        assertEquals(task2.getStartTime(), loadedTask2.getStartTime());
+        assertEquals(task2.getDuration(), loadedTask2.getDuration());
+        assertEquals(task2.getEndTime(), loadedTask2.getEndTime());
 
         // Проверяем эпики
         List<Epic> loadedEpics = loadedTaskManager.getAllEpics();
@@ -103,6 +117,9 @@ class FileBackendTaskManagerTest {
         assertEquals(epic1.getName(), loadedEpic1.getName());
         assertEquals(epic1.getDescription(), loadedEpic1.getDescription());
         assertEquals(epic1.getStatus(), loadedEpic1.getStatus());
+        assertEquals(epic1.getStartTime(), loadedEpic1.getStartTime());
+        assertEquals(epic1.getDuration(), loadedEpic1.getDuration());
+        assertEquals(epic1.getEndTime(), loadedEpic1.getEndTime());
 
         // Проверяем подзадачи
         List<Subtask> loadedSubtasks = loadedTaskManager.getAllSubtasks();
@@ -116,6 +133,9 @@ class FileBackendTaskManagerTest {
         assertEquals(subtask1.getDescription(), loadedSubtask1.getDescription());
         assertEquals(subtask1.getStatus(), loadedSubtask1.getStatus());
         assertEquals(subtask1.getEpicId(), loadedSubtask1.getEpicId());
+        assertEquals(subtask1.getStartTime(), loadedSubtask1.getStartTime());
+        assertEquals(subtask1.getDuration(), loadedSubtask1.getDuration());
+        assertEquals(subtask1.getEndTime(), loadedSubtask1.getEndTime());
 
         // Проверка связи подзадачи с эпиком
         assertEquals(1, loadedEpic1.getSubtaskIds().size());
@@ -126,8 +146,8 @@ class FileBackendTaskManagerTest {
     @Test
     void testLoadMultipleTasks() {
         // Создаем несколько задач и сохраняем их
-        Task task1 = new Task(0, "Task 1", "Description 1", Status.NEW);
-        Task task2 = new Task(0, "Task 2", "Description 2", Status.IN_PROGRESS);
+        Task task1 = new Task(1, "Task 1", "Description 1", Status.NEW, LocalDateTime.of(2022, 9, 6, 13, 30), Duration.ofMinutes(30));
+        Task task2 = new Task(2, "Task 2", "Description 2", Status.IN_PROGRESS, LocalDateTime.of(2022, 10, 3, 12, 10), Duration.ofMinutes(54));
         taskManager.createTask(task1);
         taskManager.createTask(task2);
 
