@@ -1,16 +1,13 @@
 package http.handlers.specific;
 
-import com.google.gson.stream.JsonReader;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import http.handlers.BaseHandler;
 import manager.InMemoryTaskManager;
-import manager.TaskManager;
 import task.Epic;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 
 public class EpicHttpHandler extends BaseHandler implements HttpHandler {
 
