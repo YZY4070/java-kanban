@@ -1,13 +1,8 @@
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import http.Server;
-import http.handlers.specific.utils.DurationTypeGsonAdapter;
-import http.handlers.specific.utils.LocalDateTimeTypeGsonAdapter;
 import manager.InMemoryTaskManager;
 import manager.Managers;
-import task.Epic;
 import task.Status;
-import task.Subtask;
 import task.Task;
 import java.io.IOException;
 import java.net.http.HttpClient;

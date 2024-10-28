@@ -4,14 +4,11 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import http.handlers.BaseHandler;
 import manager.InMemoryTaskManager;
-import manager.TaskManager;
 import task.Task;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 public class TaskHttpHandler extends BaseHandler implements HttpHandler {
 

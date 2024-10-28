@@ -1,11 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import http.Server;
-import http.handlers.specific.utils.DurationTypeGsonAdapter;
-import http.handlers.specific.utils.LocalDateTimeTypeGsonAdapter;
 import manager.InMemoryTaskManager;
 import manager.Managers;
 import org.junit.jupiter.api.AfterEach;
@@ -101,7 +98,6 @@ public class TaskTest {
         assertEquals(200, response.statusCode(), "Неверный статус");
         assertEquals(task1, receivedTask, "Неверная задача по ID");
     }
-
 
 
     @Test
