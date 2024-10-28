@@ -1,7 +1,7 @@
 package manager;
 
 public enum TaskType {
-    EPIC,
-    TASK,
-    SUBTASK
+  EPIC,
+  TASK,
+  SUBTASK
 }
