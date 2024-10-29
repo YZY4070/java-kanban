@@ -37,7 +37,6 @@ public class TaskHttpHandler extends BaseHandler implements HttpHandler {
         try {
             String path = exchange.getRequestURI().getPath();
 
-
             if ("/tasks".equals(path)) { // Проверка пути "/tasks"
                 String response = gson.toJson(taskManager.getAllTasks());
                 sendText(exchange, response, 200);
@@ -45,18 +44,13 @@ public class TaskHttpHandler extends BaseHandler implements HttpHandler {
             }
 
             if (path.startsWith("/tasks/")) { // Проверка пути "/tasks/{id}"
-                String pathId = path.substring("/tasks/".length());
-                int id = Integer.parseInt(pathId);
-                if (id != -1) {
-                    if (taskManager.getTaskById(id) != null) {
-                        String response = gson.toJson(taskManager.getTaskById(id));
-                        sendText(exchange, response, 200);
-                    } else {
-                        sendNotFound(exchange);
-                    }
-                } else {
-                    sendNotFound(exchange);
-                }
+//                String pathId = path.substring("/tasks/".length());
+//                int id = Integer.parseInt(pathId);
+                int id = getIdFromPath(path);
+                if (id > 0 && taskManager.getTaskById(id) != null) {
+                    String response = gson.toJson(taskManager.getTaskById(id));
+                    sendText(exchange, response, 200);
+                } else sendNotFound(exchange);
                 return;
             }
             sendNotFound(exchange); // Если путь не соответствует ни одному из условий, возвращаем 404
@@ -80,9 +74,10 @@ public class TaskHttpHandler extends BaseHandler implements HttpHandler {
                 sendText(exchange, response, 201);
             }
             if (path.startsWith("/tasks/")) {
-                String pathId = path.substring("/tasks/".length());
-                int id = Integer.parseInt(pathId);
-                if (id <= 0) {
+//                String pathId = path.substring("/tasks/".length());
+//                int id = Integer.parseInt(pathId);
+                int id = getIdFromPath(path);
+                if (id > 0) {
                     task.setId(id);
                     taskManager.updateTask(task);
                     String response = gson.toJson(task);
@@ -103,13 +98,13 @@ public class TaskHttpHandler extends BaseHandler implements HttpHandler {
             String path = exchange.getRequestURI().getPath();
 
             if (path.startsWith("/tasks/")) {
-                String pathId = path.substring("/tasks/".length());
-                int id = Integer.parseInt(pathId);
-                if (id > 0) {
+//                String pathId = path.substring("/tasks/".length());
+//                int id = Integer.parseInt(pathId);
+                int id = getIdFromPath(path);
+                Task task = taskManager.getTaskById(id);
+                if (task != null) {
                     taskManager.deleteTaskById(id);
                     sendText(exchange, "Task с id: " + id + " - удалена", 204);
-                } else {
-                    sendNotFound(exchange);
                 }
             } else {
                 sendNotFound(exchange);

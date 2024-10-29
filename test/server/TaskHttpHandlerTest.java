@@ -24,7 +24,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TaskTest {
+public class TaskHttpHandlerTest {
 
     private static final String BASE_URL = "http://localhost:8080/tasks";
     private Server server;

@@ -45,12 +45,13 @@ public class EpicHttpHandler extends BaseHandler implements HttpHandler {
                 String response = gson.toJson(epic);
                 sendText(exchange, response, 200);
             } else if (path.startsWith("/epics/")) {
-                String pathId = path.substring("/epics/".length());
+//                String pathId = path.substring("/epics/".length());
                 int id = -1;
                 try {
-                    id = Integer.parseInt(pathId);
+//                    id = Integer.parseInt(pathId);
+                    id = getIdFromPath(path);
                 } catch (NumberFormatException e) {
-                    sendNotFound(exchange);
+                    sendText(exchange, "Bad request", 400);
                     return;
                 }
 
@@ -77,23 +78,17 @@ public class EpicHttpHandler extends BaseHandler implements HttpHandler {
                 String response = gson.toJson(taskManager.getAllEpics());
                 sendText(exchange, response, 200);
             } else if (path.startsWith("/epics/") && path.indexOf('/', 7) == -1) {
-                String pathId = path.substring(7);
-                int id = Integer.parseInt(pathId);
-                if (id != -1) {
-                    Object epic = taskManager.getEpicById(id);
-                    if (epic != null) {
-                        String response = gson.toJson(epic);
-                        sendText(exchange, response, 200);
-                    } else {
-                        sendNotFound(exchange);
-                    }
-                } else {
-                    sendNotFound(exchange);
-                }
+//                String pathId = path.substring(7);
+//                int id = Integer.parseInt(pathId);
+                int id = getIdFromPath(path);
+                if (id > 0 && taskManager.getEpicById(id) != null) {
+                    String response = gson.toJson(taskManager.getEpicById(id));
+                    sendText(exchange, response, 200);
+                } else sendNotFound(exchange);
             } else if (path.startsWith("/epics/") && path.endsWith("/subtasks")) {
                 String pathId = path.substring(7, path.lastIndexOf("/subtasks"));
                 int id = Integer.parseInt(pathId);
-                if (id != -1) {
+                if (id > 0) {
                     if (taskManager.getSubtasksByEpicId(id) != null) {
                         String response = gson.toJson(taskManager.getSubtasksByEpicId(id));
                         sendText(exchange, response, 200);
@@ -101,7 +96,7 @@ public class EpicHttpHandler extends BaseHandler implements HttpHandler {
                         sendNotFound(exchange);
                     }
                 } else {
-                    sendNotFound(exchange);
+                    sendText(exchange, "bad request", 400);
                 }
             }
         } catch (Exception e) {
@@ -117,11 +112,11 @@ public class EpicHttpHandler extends BaseHandler implements HttpHandler {
             if (path.startsWith("/epics/") && path.indexOf("/", 7) == -1) {
                 String pathId = path.substring(7);
                 int id = Integer.parseInt(pathId);
-                Object epic = taskManager.getEpicById(id);
+                Epic epic = taskManager.getEpicById(id);
                 if (epic != null) {
                     taskManager.deleteEpicById(id);
                     sendText(exchange, "Эпик с id " + id + " удален", 200);
-                } else sendNotFound(exchange);
+                }
             } else sendNotFound(exchange);
         } catch (Exception e) {
             e.printStackTrace();

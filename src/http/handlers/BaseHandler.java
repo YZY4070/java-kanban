@@ -12,7 +12,8 @@ import java.nio.charset.StandardCharsets;
 
 public abstract class BaseHandler {
     protected final TaskManager taskManager;
-    public Gson gson = Managers.getGson();
+    protected final Gson gson = Managers.getGson();
+    private static final int NUM_PARTS_IN_PATH_WITH_ID = 3;
 
     public BaseHandler(InMemoryTaskManager taskManager) {
         this.taskManager = taskManager;
@@ -42,4 +43,12 @@ public abstract class BaseHandler {
         return new String(httpExchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
     }
 
+    protected Integer getIdFromPath(String path) {
+        final String[] uriSplitted = path.split("/");
+        Integer id = null;
+        if (uriSplitted.length >= NUM_PARTS_IN_PATH_WITH_ID) {
+            id = Integer.parseInt(uriSplitted[NUM_PARTS_IN_PATH_WITH_ID - 1]);
+        }
+        return id;
+    }
 }

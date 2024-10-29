@@ -68,7 +68,7 @@ public class SubtaskHttpHandler extends BaseHandler implements HttpHandler {
             if (path.startsWith("/subtasks/")) {
                 String pathID = path.substring("/subtasks/".length());
                 int id = Integer.parseInt(pathID);
-                if (id <= 0) {
+                if (id > 0) {
                     subtask.setId(id);
                     taskManager.updateSubtask(subtask);
                     String response = gson.toJson(subtask);
@@ -87,11 +87,10 @@ public class SubtaskHttpHandler extends BaseHandler implements HttpHandler {
             if (path.startsWith("/subtasks/")) {
                 String pathID = path.substring("/subtasks/".length());
                 int id = Integer.parseInt(pathID);
-                if (id <= 0) {
+                Subtask subtask = taskManager.getSubtaskById(id);
+                if (subtask != null) {
                     taskManager.deleteSubtaskById(id);
                     sendText(exchange, "Подзадача с id - " + id + " удалена", 200);
-                } else {
-                    sendNotFound(exchange);
                 }
             } else {
                 sendNotFound(exchange);

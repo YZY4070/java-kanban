@@ -20,6 +20,10 @@ public class Subtask extends Task {
         return epicId;
     }
 
+    public void setEpicId(int id){
+        this.epicId = id;
+    }
+
     @Override
     public String toString() {
         return "Subtask{" +
