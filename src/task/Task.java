@@ -9,8 +9,8 @@ public class Task {
     protected String name;
     protected String description;
     protected Status status;
-    protected Duration duration;
-    protected LocalDateTime startTime;
+    public Duration duration;
+    public LocalDateTime startTime;
 
     public Task(int id, String name, String description, Status status, LocalDateTime startTime, Duration duration) {
         this.id = id;
@@ -28,14 +28,6 @@ public class Task {
         this.status = status;
         this.startTime = LocalDateTime.MIN;
         this.duration = Duration.ZERO;
-    }
-
-    public void setDuration(Duration duration) {
-        this.duration = duration;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
     }
 
     public int getId() {
@@ -103,8 +95,16 @@ public class Task {
         return startTime;
     }
 
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     public Duration getDuration() {
         return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
 
 }

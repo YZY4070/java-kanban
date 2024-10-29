@@ -1,6 +1,8 @@
 package manager;
 
-import task.*;
+import task.Epic;
+import task.Subtask;
+import task.Task;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,32 +17,6 @@ public class FileBackendTaskManager extends InMemoryTaskManager {
     public FileBackendTaskManager(File file) {
         super(Managers.getDefaultHistoryManager());
         this.file = file;
-    }
-
-    protected void save() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            writer.write(CSVTaskFormat.header());
-            writer.newLine();
-
-            for (Task task : epics.values()) {
-                writer.write(CSVTaskFormat.toString(task));
-                writer.newLine();
-            }
-
-            for (Task task : subtasks.values()) {
-                writer.write(CSVTaskFormat.toString(task));
-                writer.newLine();
-            }
-
-            for (Task task : tasks.values()) {
-                writer.write(CSVTaskFormat.toString(task));
-                writer.newLine();
-            }
-
-
-        } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при чтении файла" + file.getName());
-        }
     }
 
     public static FileBackendTaskManager loadFromFile(File file) {
@@ -73,6 +49,32 @@ public class FileBackendTaskManager extends InMemoryTaskManager {
         }
         taskManager.setNextId(maxId + 1);
         return taskManager;
+    }
+
+    protected void save() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
+            writer.write(CSVTaskFormat.header());
+            writer.newLine();
+
+            for (Task task : epics.values()) {
+                writer.write(CSVTaskFormat.toString(task));
+                writer.newLine();
+            }
+
+            for (Task task : subtasks.values()) {
+                writer.write(CSVTaskFormat.toString(task));
+                writer.newLine();
+            }
+
+            for (Task task : tasks.values()) {
+                writer.write(CSVTaskFormat.toString(task));
+                writer.newLine();
+            }
+
+
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка при чтении файла" + file.getName());
+        }
     }
 
     @Override

@@ -1,21 +1,25 @@
 package manager;
 
-import task.*;
+import task.Epic;
+import task.Status;
+import task.Subtask;
+import task.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Task> tasks = new HashMap<>();
     protected final Map<Integer, Subtask> subtasks = new HashMap<>();
     protected final Map<Integer, Epic> epics = new HashMap<>();
-
-
-    protected int nextId = 1;
-
     protected final HistoryManager historyManager;
-
     private final Set<Task> prioritizedTasks = new TreeSet<>((task1, task2) -> {
 
         if (task1.getStartTime() == null && task2.getStartTime() == null) {
@@ -30,6 +34,11 @@ public class InMemoryTaskManager implements TaskManager {
 
         return task1.getStartTime().compareTo(task2.getStartTime());
     });
+    protected int nextId = 1;
+
+    public InMemoryTaskManager(HistoryManager historyManager) {
+        this.historyManager = historyManager;
+    }
 
     private static boolean isTimeOverLap(Task task1, Task task2) {
         LocalDateTime start1 = task1.getStartTime();
@@ -61,12 +70,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public Set<Task> getPrioritizedTasks() {
-        return prioritizedTasks;
-    }
-
-    public InMemoryTaskManager(HistoryManager historyManager) {
-        this.historyManager = historyManager;
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
     }
 
     public void setNextId(Integer value) {
